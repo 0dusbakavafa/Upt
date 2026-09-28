@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#050505">
+<title>FireLab AI — IPA Update Engine</title>
+<style>
+*{box-sizing:border-box}html{width:100%;min-width:0;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:none!important;text-size-adjust:none!important}body{margin:0;min-height:100%;width:100%;min-width:0;max-width:100%;overflow-x:hidden;background:#050505;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,Arial,sans-serif;-webkit-text-size-adjust:none!important;text-size-adjust:none!important;touch-action:pan-y;overscroll-behavior-x:none}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button,input,label{font:inherit;font-size:16px;-webkit-tap-highlight-color:transparent}
+.app{width:100%;max-width:1120px;min-width:0;margin:0 auto;padding:28px 16px 70px}.top{display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:12px;align-items:center}.logo{width:44px;height:44px;border:1px solid #303035;border-radius:15px;background:linear-gradient(145deg,#292929,#050505);box-shadow:inset 0 1px #666,0 18px 50px #000}.brand b{font-size:16px}.brand small{display:block;color:#777;margin-top:3px}.pill{font-size:10px;color:#aaa;border:1px solid #29292d;background:#101010;padding:8px 11px;border-radius:999px}
+.hero{padding:45px 0 25px}.hero h1{font-size:clamp(40px,8vw,82px);line-height:.9;letter-spacing:-5px;margin:0 0 18px}.hero p{display:block;width:100%;max-width:790px;color:#999;line-height:1.6;font-size:14px;overflow-wrap:anywhere;word-break:break-word}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:760px){.grid{grid-template-columns:1fr}.hero h1{letter-spacing:-3px}}
+.card{border:1px solid #242427;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border-radius:25px;padding:20px;backdrop-filter:blur(30px);box-shadow:inset 0 1px rgba(255,255,255,.08),0 25px 80px #000}.full{grid-column:1/-1}.card h2{font-size:14px;margin:0 0 7px}.card p{font-size:11px;color:#777;line-height:1.55;margin:0}
+.drop{display:block;margin-top:15px;border:1px dashed #3a3a3f;border-radius:18px;padding:24px;text-align:center;background:#050505;cursor:pointer}.drop b{display:block;font-size:13px}.drop span{display:block;color:#666;font-size:11px;margin-top:7px}input{display:none}.row{display:flex;align-items:center;gap:10px;margin-top:13px}.name{flex:1;color:#aaa;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.btn{border:1px solid #333;background:#eee;color:#050505;border-radius:13px;padding:11px 15px;font-weight:700;cursor:pointer}.btn.dark{background:#111;color:#eee}.btn:disabled{opacity:.3;cursor:not-allowed}
+.status{margin-bottom:14px}.line{display:flex;justify-content:space-between;color:#999;font-size:11px;margin-bottom:8px}.bar{height:7px;background:#151517;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:#eee;border-radius:inherit;transition:.2s}.logs{height:330px;overflow:auto;background:#020202;border:1px solid #1c1c1f;border-radius:17px;padding:14px;font:11px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;color:#999}.ok{color:#ddd}.warn{color:#c9a66b}.err{color:#ff7777}
+.filelist{margin-top:13px;display:grid;gap:8px}.fileitem{border:1px solid #222225;background:#080808;border-radius:13px;padding:11px;font-size:11px;color:#aaa}.fileitem b{color:#eee}.outputs{display:grid;gap:9px;margin-top:14px}.out{border:1px solid #242427;border-radius:15px;padding:14px;background:#070707}.out b{font-size:12px}.out small{display:block;color:#666;margin-top:6px}.download{display:inline-block;text-decoration:none;margin:8px 8px 0 0}
+.badge{display:inline-block;font-size:9px;padding:4px 7px;border-radius:999px;border:1px solid #333;color:#999;margin-left:6px}.green{color:#ddd}.yellow{color:#c9a66b}
+
+*,*::before,*::after{min-width:0}
+h1,h2,p,b,small,span,label,button{max-width:100%;overflow-wrap:anywhere}
+.card,.drop,.row,.filelist,.outputs,.logs{max-width:100%;min-width:0}
+.row{flex-wrap:wrap}
+.name{min-width:0}
+@supports (-webkit-touch-callout:none){
+  html,body{-webkit-text-size-adjust:none!important;text-size-adjust:none!important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand"><div class="logo"></div><div><b>FireLab AI</b><small>IPA Update Engine • Local</small></div></div><div class="pill">FAIL-CLOSED</div></header>
+
+<section class="hero">
+<h1>IPA inteira →<br>arquivos atualizados.</h1>
+<p>Agora o painel recebe a <b>IPA completa</b> e uma quantidade variável de arquivos anteriores do seu projeto. O motor identifica cada arquivo por nome, extensão e conteúdo, procura a versão correspondente dentro da IPA e só exporta quando consegue comprovar a correspondência. Arquivos que não existirem na IPA são marcados para transformação específica, em vez de receber bytes inventados.</p>
+</section>
+
+<div class="grid">
+<section class="card">
+<h2>01 • IPA completa</h2>
+<p>Selecione a IPA inteira. A análise do índice ZIP evita carregar 1 GB inteiro na memória de uma vez.</p>
+<label class="drop"><b>Selecionar IPA</b><span>Arquivos .ipa grandes são aceitos</span><input id="ipa" type="file" accept=".ipa,application/zip"></label>
+<div class="row"><span class="name" id="ipaName">Nenhuma IPA</span><button class="btn dark" id="clearI" disabled>Limpar</button></div>
+</section>
+
+<section class="card">
+<h2>02 • Arquivos anteriores</h2>
+<p>Selecione <b>quantos arquivos forem necessários</b>. Não existe uma lista fixa de dois arquivos.</p>
+<label class="drop"><b>Selecionar arquivos do menu</b><span>Selecione todos os arquivos anteriores que deseja atualizar</span><input id="refs" type="file" multiple></label>
+<div class="row"><span class="name" id="refName">Nenhum arquivo</span><button class="btn dark" id="clearR" disabled>Limpar</button></div>
+<div class="filelist" id="fileList"></div>
+</section>
+
+<section class="card full">
+<div class="status"><div class="line"><span id="stage">Aguardando entrada</span><span id="pct">0%</span></div><div class="bar"><i id="fill"></i></div></div>
+<div class="row"><button class="btn" id="go" disabled>Executar atualização inteligente</button><button class="btn dark" id="stop" disabled>Parar</button></div>
+<div class="logs" id="logs">FireLab AI pronto. Nenhum arquivo é enviado para servidor.</div>
+<div id="downloads" style="margin-top:12px"></div>
+</section>
+
+<section class="card full">
+<h2>03 • Resultados profundos</h2>
+<p>O scanner percorre a IPA, containers aninhados, textos, JSON, XML, plist, scripts, strings, bytes e amostras hexadecimais. Formatos não decodificáveis são registrados como binários opacos.</p>
+<div class="outputs" id="results"><div class="out"><b>Nenhum resultado ainda</b><small>Execute a análise para criar o relatório.</small></div></div>
+</section>
+</div>
+</div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+let ipa=null, refs=[], stop=false, objectUrls=[];
+const logs=$('#logs');
+function log(t,c=''){const e=document.createElement('div');e.textContent='› '+t;if(c)e.className=c;logs.appendChild(e);logs.scrollTop=1e9}
+function P(n,t){$('#fill').style.width=n+'%';$('#pct').textContent=n+'%';$('#stage').textContent=t}
+function canonical(n){return n.normalize('NFKC').toLowerCase().replace(/\\/g,'/').replace(/^.*\//,'').replace(/\.[^.]+$/,'').replace(/[^a-z0-9]/g,'')}
+function baseName(n){return n.replace(/\\/g,'/').split('/').pop()}
+function ext(n){let m=n.match(/\.([^.]+)$/);return m?m[1].toLowerCase():''}
+function nameTokens(n){return (baseName(n).toLowerCase().match(/[a-z0-9]+/g)||[]).filter(x=>x.length>1)}
+function scoreName(a,b){const A=canonical(baseName(a)),B=canonical(baseName(b));if(A===B)return 100;const ea=ext(a),eb=ext(b);let score=0;if(ea&&eb&&ea===eb)score+=25;if(A&&B&&(A.includes(B)||B.includes(A)))score+=55;const ta=nameTokens(a),tb=nameTokens(b);let hit=ta.filter(x=>tb.includes(x)).length;score+=Math.round(20*hit/Math.max(1,Math.max(ta.length,tb.length)));return Math.min(100,score)}
+
+function tokenSet(n){return new Set((n.toLowerCase().match(/[a-z0-9]+/g)||[]))}
+function tokenOverlap(a,b){
+  const A=tokenSet(a),B=tokenSet(b);let hit=0;
+  for(const x of A)if(B.has(x))hit++;
+  return hit/Math.max(1,new Set([...A,...B]).size);
+}
+function cheapSimilarity(a,b){
+  const n=Math.min(a.length,b.length,32768);
+  if(!n)return 0;
+  let same=0,step=Math.max(1,Math.floor(n/512));
+  for(let i=0;i<n;i+=step)if(a[i]===b[i])same++;
+  return same/Math.ceil(n/step);
+}
+function candidateScore(ref,c){
+  const rb=baseName(ref.name), cb=baseName(c.name);
+  let score=0;
+  if(rb.toLowerCase()===cb.toLowerCase())score+=100;
+  else if(canonical(rb)===canonical(cb))score+=92;
+  else score+=45*tokenOverlap(rb,cb);
+  if(ext(ref.name)===ext(c.name))score+=12;
+  else score-=20;
+  const rs=ref.size, cs=c.entry.size;
+  if(rs===cs)score+=18;
+  else{
+    const ratio=Math.min(rs,cs)/Math.max(1,Math.max(rs,cs));
+    score+=18*ratio;
+  }
+  if(c.depth===0)score+=2;
+  return score;
+}
+async function chooseBestMatch(ref,candidates){
+  const ranked=candidates
+    .map(c=>({c,score:candidateScore(ref,c)}))
+    .filter(x=>ext(ref.name)===ext(x.c.name)||canonical(ref.name).includes(canonical(x.c.name))||canonical(x.c.name).includes(canonical(ref.name)))
+    .sort((a,b)=>b.score-a.score);
+  if(!ranked.length)return null;
+  // First trust exact/normalized names immediately.
+  if(ranked[0].score>=105)return {...ranked[0].c,score:Math.round(ranked[0].score),reason:'nome exato/normalizado'};
+  // Deep sample verification on a small shortlist.
+  const refHead=new Uint8Array(await ref.slice(0,Math.min(32768,ref.size)).arrayBuffer());
+  const refTail=new Uint8Array(await ref.slice(Math.max(0,ref.size-32768),ref.size).arrayBuffer());
+  let best=null;
+  for(const x of ranked.slice(0,40)){
+    if(stop)return null;
+    try{
+      const data=await readZipEntry(x.c.container||ipa,x.c.entry);
+      const head=data.slice(0,refHead.length);
+      const tail=data.slice(Math.max(0,data.length-refTail.length));
+      let sc=x.score+18*cheapSimilarity(refHead,head)+12*cheapSimilarity(refTail,tail);
+      const rt=utf8Text(refHead), ct=utf8Text(head);
+      if(rt&&ct){
+        const rk=(rt.match(/[A-Za-z_][A-Za-z0-9_.-]{2,}/g)||[]).slice(0,1500);
+        const ck=(ct.match(/[A-Za-z_][A-Za-z0-9_.-]{2,}/g)||[]).slice(0,1500);
+        const ks=new Set(ck);let hits=0;for(const t of rk)if(ks.has(t))hits++;
+        sc+=Math.min(15,hits/Math.max(1,rk.length)*30);
+      }
+      if(!best||sc>best.score)best={...x.c,score:Math.round(sc),reason:sc>=105?'correspondência estrutural':'melhor correspondência disponível'};
+    }catch{}
+  }
+  return best;
+}
+function pickMatch(name,entries){
+  const exact=entries.filter(x=>baseName(x.name).toLowerCase()===baseName(name).toLowerCase()&&ext(x.name)===ext(name));
+  if(exact.length)return {entry:exact[0].entry||exact[0],container:exact[0].container||ipa,score:120,reason:'nome exato'};
+  const norm=entries.filter(x=>canonical(baseName(x.name))===canonical(baseName(name))&&ext(x.name)===ext(name));
+  if(norm.length)return {entry:norm[0].entry||norm[0],container:norm[0].container||ipa,score:112,reason:'nome normalizado'};
+  return null;
+}
+
+function setRefs(){
+  refs=[...$('#refs').files];
+  $('#refName').textContent=refs.length?`${refs.length} arquivo(s) selecionado(s)`:'Nenhum arquivo';
+  $('#clearR').disabled=!refs.length;
+  const box=$('#fileList');box.innerHTML='';
+  refs.forEach((f,i)=>{let d=document.createElement('div');d.className='fileitem';d.innerHTML='<b>'+i+'.</b> '+escapeHtml(f.name)+' <span class="badge">'+escapeHtml(ext(f.name).toUpperCase()||'BIN')+'</span> • '+formatSize(f.size);box.appendChild(d)});
+  check();
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function formatSize(n){if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(1)+' KB';return (n/1048576).toFixed(1)+' MB'}
+$('#ipa').onchange=()=>{ipa=$('#ipa').files[0]||null;$('#ipaName').textContent=ipa?ipa.name+' • '+formatSize(ipa.size):'Nenhuma IPA';$('#clearI').disabled=!ipa;check()}
+$('#refs').onchange=setRefs;
+$('#clearI').onclick=()=>{ipa=null;$('#ipa').value='';$('#ipaName').textContent='Nenhuma IPA';$('#clearI').disabled=true;check()};
+$('#clearR').onclick=()=>{$('#refs').value='';refs=[];$('#refName').textContent='Nenhum arquivo';$('#clearR').disabled=true;$('#fileList').innerHTML='';check()};
+function check(){$('#go').disabled=!(ipa&&refs.length)}
+function u64(v){return Number(v)}
+async function readAt(file,start,len){return new Uint8Array(await file.slice(start,start+len).arrayBuffer())}
+function u16(a,o){return a[o]|a[o+1]<<8}
+function u32(a,o){return (a[o]|a[o+1]<<8|a[o+2]<<16|a[o+3]<<24)>>>0}
+async function findEOCD(file){
+  const max=Math.min(file.size,22+0xFFFF);
+  const a=await readAt(file,file.size-max,max);
+  for(let i=a.length-22;i>=0;i--)if(u32(a,i)===0x06054b50)return {offset:file.size-max+i,bytes:a.slice(i)};
+  throw Error('IPA inválida: diretório ZIP central não encontrado.');
+}
+async function readZipIndex(file){
+  const e=await findEOCD(file),a=e.bytes;
+  const count=u16(a,10),cdSize=u32(a,12),cdOff=u32(a,16);
+  if(cdOff+cdSize>file.size)throw Error('IPA inválida: diretório central aponta para fora do arquivo.');
+  const cd=await readAt(file,cdOff,cdSize);let p=0,entries=[];
+  for(let i=0;i<count;i++){
+    if(u32(cd,p)!==0x02014b50)throw Error('IPA inválida: entrada ZIP central corrompida.');
+    const method=u16(cd,p+10),comp=u32(cd,p+20),uncomp=u32(cd,p+24),nameLen=u16(cd,p+28),extraLen=u16(cd,p+30),commentLen=u16(cd,p+32),localOff=u32(cd,p+42);
+    const name=new TextDecoder().decode(cd.slice(p+46,p+46+nameLen));
+    entries.push({name,method,compressedSize:comp,size:uncomp,localOffset:localOff});
+    p+=46+nameLen+extraLen+commentLen;
+  }
+  return {entries,count};
+}
+async function readZipEntry(file,e){
+  if(e.size>512*1024*1024)throw Error('Entrada maior que 512 MiB: exportação individual bloqueada para evitar exaustão de memória no navegador.');
+  const h=await readAt(file,e.localOffset,30);
+  if(u32(h,0)!==0x04034b50)throw Error('Cabeçalho ZIP local inválido para '+e.name);
+  const nl=u16(h,26),xl=u16(h,28),start=e.localOffset+30+nl+xl;
+  const raw=await file.slice(start,start+e.compressedSize).arrayBuffer();
+  if(e.method===0)return new Uint8Array(raw);
+  if(e.method===8 && 'DecompressionStream' in window){
+    const ds=new DecompressionStream('deflate-raw');
+    const ab=await new Response(new Blob([raw]).stream().pipeThrough(ds)).arrayBuffer();
+    const out=new Uint8Array(ab);
+    if(out.byteLength!==e.size)throw Error('Tamanho descomprimido inesperado para '+e.name);
+    return out;
+  }
+  throw Error('A entrada '+e.name+' usa compressão ZIP não suportada por este navegador.');
+}
+async function sha256(data){
+  const d=await crypto.subtle.digest('SHA-256',data);
+  return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function exactOutputName(file){
+  // File.name is the exact basename supplied by the browser's file picker.
+  // Never derive the output name from the IPA match.
+  return String(file.name);
+}
+function download(name,data,type){
+  const exactName=String(name);
+  const url=URL.createObjectURL(new Blob([data],{type}));
+  objectUrls.push(url);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=exactName;
+  a.setAttribute('download',exactName);
+  a.dataset.filename=exactName;
+  a.className='btn dark download';
+  a.textContent='Baixar '+exactName;
+  $('#downloads').appendChild(a);
+}
+function renderResult(r){
+  const d=document.createElement('div');d.className='out';
+  const state=r.status==='updated-from-ipa'?'MATCH':(r.status==='forced-best-match'?'FORCED':'REVIEW');
+  d.innerHTML='<b>'+escapeHtml(r.outputName)+' <span class="badge">'+state+'</span></b><small>'+escapeHtml(r.detail)+'</small>';
+  $('#results').appendChild(d);
+}
+
+const TEXT_EXT=new Set(['txt','json','xml','plist','csv','ini','cfg','conf','yaml','yml','md','js','mjs','c','h','cc','cpp','m','mm','swift','cs','java','kt','sh','py','lua','html','css','sql','log','strings','entitlements']);
+const MAX_NESTED=8, MAX_SCAN_BYTES=64*1024*1024, MAX_ENTRIES=20000;
+
+function printableRatio(a){if(!a.length)return 0;let n=0;for(const x of a)if(x===9||x===10||x===13||(x>=32&&x<=126))n++;return n/a.length}
+function hexPreview(a,n=128){let x=a.slice(0,n),o='';for(let i=0;i<x.length;i+=16){let r=x.slice(i,i+16);o+=Array.from(r).map(v=>v.toString(16).padStart(2,'0')).join(' ')+' | '+Array.from(r).map(v=>(v>=32&&v<=126)?String.fromCharCode(v):'.').join('')+'\n'}return o}
+function utf8Text(a){try{return new TextDecoder('utf-8',{fatal:true}).decode(a)}catch{return null}}
+function detectKind(name,a){
+  const e=ext(name);
+  if(a.length>=4&&u32(a,0)===0x04034b50)return'ZIP container';
+  if(a.length>=4&&u32(a,0)===0x464c457f)return'ELF binary';
+  if(a.length>=4&&(u32(a,0)===0xfeedfacf||u32(a,0)===0xcffaedfe))return'Mach-O 64-bit';
+  if(a.length>=4&&(u32(a,0)===0xfeedface||u32(a,0)===0xcefaedfe))return'Mach-O 32-bit';
+  if(a.length>=16&&new TextDecoder('latin1').decode(a.slice(0,16)).startsWith('SQLite format 3'))return'SQLite database';
+  if(TEXT_EXT.has(e))return'text-like';
+  const t=utf8Text(a.slice(0,65536));
+  if(t&&printableRatio(a.slice(0,4096))>.75)return'UTF-8/text';
+  return'binary/opaque'
+}
+async function scanBytes(name,a,depth,source,report){
+  const kind=detectKind(name,a),entry={path:source+'/'+name,type:kind,size:a.byteLength,depth,sha256:await sha256(a),hexPreview:hexPreview(a)};
+  const sample=a.slice(0,Math.min(a.length,MAX_SCAN_BYTES)),text=utf8Text(sample);
+  if(text){entry.textPreview=text.slice(0,4000);if(/\.json$/i.test(name)){try{entry.jsonKeys=Object.keys(JSON.parse(text)).slice(0,500)}catch{}}}
+  report.push(entry);return entry
+}
+async function recursiveZipScan(container,label,depth,report,seen,candidates){if(depth>MAX_NESTED)return;let idx;try{idx=await readZipIndex(container)}catch{return}if(idx.entries.length>MAX_ENTRIES)throw Error('Limite de segurança: mais de '+MAX_ENTRIES+' entradas em '+label);for(const e of idx.entries){if(stop)return;if(e.name.endsWith('/'))continue;const key=label+'|'+e.name;if(seen.has(key))continue;seen.add(key);if(e.size>MAX_SCAN_BYTES){report.push({path:label+'/'+e.name,type:'large-binary-skipped',size:e.size,depth});continue}let bytes;try{bytes=await readZipEntry(container,e)}catch(err){report.push({path:label+'/'+e.name,type:'unreadable-entry',size:e.size,depth,error:err.message});continue}candidates.push({name:e.name,entry:e,container,depth,source:label});await scanBytes(baseName(e.name),bytes,depth,label,report);if(/\.(zip|ipa|apk|jar|aar)$/i.test(e.name))await recursiveZipScan(new Blob([bytes]),label+'/'+e.name,depth+1,report,seen,candidates)}}
+async function run(){
+  stop=false;$('#go').disabled=true;$('#stop').disabled=false;logs.textContent='';$('#results').innerHTML='';$('#downloads').innerHTML='';
+  objectUrls.forEach(URL.revokeObjectURL);objectUrls=[];
+  try{
+    P(2,'Preparando engine');log('Inicializando motor local fail-closed.');
+    log('IPA: '+ipa.name+' • '+formatSize(ipa.size));
+    P(8,'Lendo índice da IPA');
+    const zip=await readZipIndex(ipa);
+    log('ZIP central localizado: '+zip.count+' entradas.','ok');
+    P(20,'Indexando arquivos');
+    const usable=zip.entries.filter(e=>!e.name.endsWith('/')&&e.size<=512*1024*1024).map(e=>({name:e.name,entry:e,container:ipa,depth:0,source:ipa.name}));
+const deepReport=[],deepCandidates=[],seen=new Set();
+log('Iniciando leitura profunda de conteúdo, códigos, textos e bytes hexadecimais.');
+await recursiveZipScan(ipa,ipa.name,0,deepReport,seen,deepCandidates);
+log(deepReport.length+' objetos internos analisados.','ok');
+const kindCount={};for(const x of deepReport)kindCount[x.type]=(kindCount[x.type]||0)+1;
+for(const [k,v] of Object.entries(kindCount))log(v+' × '+k);
+
+    log(usable.length+' entradas utilizáveis no índice.');
+    const report=[];const usedEntries=new Set();
+    for(let i=0;i<refs.length;i++){await new Promise(r=>setTimeout(r,0));
+      if(stop){log('Processamento interrompido.','warn');return}
+      const ref=refs[i];
+      P(22+Math.floor(58*(i/refs.length)),'Analisando '+(i+1)+'/'+refs.length);
+      log('Analisando referência: '+ref.name);
+      let pool=usable.concat(deepCandidates);
+      let match=pickMatch(ref.name,pool);
+      if(!match){
+        match=await chooseBestMatch(ref,pool);
+      }
+      
+      if(match){
+        const entryKey=(match.container===ipa?'IPA':(match.container?.size||0))+'|'+match.entry.localOffset+'|'+match.entry.name;
+        if(usedEntries.has(entryKey)){
+          const alternate=await chooseBestMatch(ref,pool.filter(c=>((c.container===ipa?'IPA':(c.container?.size||0))+'|'+c.entry.localOffset+'|'+c.entry.name)!==entryKey));
+          if(alternate)match=alternate;
+        }
+        usedEntries.add((match.container===ipa?'IPA':(match.container?.size||0))+'|'+match.entry.localOffset+'|'+match.entry.name);
+        log('Correspondência encontrada: '+match.entry.name+' • score '+match.score+' • '+match.reason,'ok');
+        try{
+          const data=await readZipEntry(match.container||ipa,match.entry);
+          const hash=await sha256(data);
+          const outName=exactOutputName(ref);
+          download(outName,data,ext(outName)==='json'?'application/json':'application/octet-stream');
+          const verified=match.score>=105;
+          const r={input:ref.name,ipaEntry:match.entry.name,score:match.score,size:data.byteLength,sha256:hash,status:verified?'updated-from-ipa':'forced-best-match',outputName:outName,detail:(verified?'Arquivo extraído da correspondência estrutural e verificado por SHA-256.':'Arquivo gerado pela melhor correspondência encontrada; revisar o manifesto antes de usar.')};
+          report.push(r);renderResult(r);
+        }catch(e){
+          const r={input:ref.name,status:'review-required',outputName:exactOutputName(ref),detail:'Correspondência localizada, mas a extração não pôde ser validada: '+e.message};
+          report.push(r);renderResult(r);log(e.message,'warn');
+        }
+      }else{
+        const r={input:ref.name,status:'transform-required',outputName:exactOutputName(ref),detail:'Nenhuma versão correspondente foi encontrada dentro da IPA. É necessária uma regra de transformação verificável; o motor não inventará bytes.'};
+        report.push(r);renderResult(r);log('Nenhuma correspondência segura para '+ref.name+'.','warn');
+      }
+    }
+    P(88,'Validação cruzada');
+    const matched=report.filter(x=>x.status==='updated-from-ipa').length;
+    const unresolved=report.length-matched;
+    log(matched+' arquivo(s) atualizado(s) por correspondência direta.','ok');
+    if(unresolved)log(unresolved+' arquivo(s) requerem transformação específica.','warn');
+    P(94,'Gerando manifesto');
+    const manifest={engine:'FireLab AI IPA Deep Scanner Ultimate',mode:'local-fail-closed',generatedAt:new Date().toISOString(),ipa:{name:ipa.name,size:ipa.size},deepScan:{objects:deepReport.length,types:kindCount,hexPreviewsIncluded:true,nestedContainersScanned:true},deepObjects:deepReport,references:report,guarantee:'Nenhum byte é inventado. Cada saída vem de uma entrada real da IPA; correspondências de baixa confiança são marcadas FORCED para revisão.',outputNaming:'EXACT_INPUT_FILENAME',outputNamingRule:'Cada arquivo de saída usa exatamente File.name do arquivo selecionado pelo usuário; o nome da entrada correspondente dentro da IPA nunca altera o nome da saída.'};
+    download('update-manifest.json',JSON.stringify(manifest,null,2),'application/json');
+    P(100,'Concluído');log('Processamento finalizado.','ok');
+  }catch(e){P(0,'Erro');log(e.message||String(e),'err')}
+  finally{$('#go').disabled=!(ipa&&refs.length);$('#stop').disabled=true}
+}
+
+let savedScrollY=0;document.getElementById('ipa').addEventListener('click',()=>{savedScrollY=window.scrollY});document.getElementById('ipa').addEventListener('change',()=>requestAnimationFrame(()=>window.scrollTo(0,savedScrollY)));document.getElementById('refs').addEventListener('click',()=>{savedScrollY=window.scrollY});document.getElementById('refs').addEventListener('change',()=>requestAnimationFrame(()=>window.scrollTo(0,savedScrollY)));
+$('#go').onclick=run;$('#stop').onclick=()=>{stop=true;$('#stop').disabled=true};
+// Detect duplicate input names without renaming them. Separate files with identical
+// names cannot coexist under different filenames on the same download folder.
+function checkDuplicateNames(){
+  const names=refs.map(exactOutputName);
+  const dup=[...new Set(names.filter((n,i)=>names.indexOf(n)!==i))];
+  if(dup.length)log('Atenção: nomes de entrada duplicados: '+dup.join(', ')+'. O painel preservará os nomes exatamente; o Safari pode acrescentar '(1)' ao salvar cópias com o mesmo nome.','warn');
+}
+const oldSetRefs=setRefs;setRefs=function(){oldSetRefs();checkDuplicateNames()};
+
+document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gestureend',e=>e.preventDefault(),{passive:false});
+document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('selectstart',e=>{if(!['INPUT','BUTTON'].includes(e.target.tagName))e.preventDefault()});
+let lastTouch=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-lastTouch<320)e.preventDefault();lastTouch=n},{passive:false});
+</script>
+</body>
+</html>
